@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 from classes.Product import Product
+import sqlite3
      
 
 keyword = input("Enter search parameter:")
@@ -29,10 +30,23 @@ for iterate in range(0,5):
         else:
            continue
 
+prod_db = sqlite3.connect('productdb.sqlite')
+db_cursor = prod_db.cursor()
+
+db_cursor.execute('CREATE TABLE IF NOT EXISTS Products (name TEXT, price FLOAT, link TEXT, in_stock BIT)')
 for o in prodlist:
-    if o.check_stock():
-        print("-------------------------")
-        print("LABEL:", o.return_name())
-        print("PRICE: $" + str(o.return_price()))
-        print("LINK: ", o.return_link())
-        print("--------------------------")
+    db_cursor.execute('SELECT in_stock from Products WHERE name = ?', (o.name, ))
+    entry = db_cursor.fetchone()
+    if entry is None:
+        db_cursor.execute('INSERT INTO Products (name, price, link, in_stock) VALUES (?,?,?,?)', (o.name, o.price, o.link, int(o.check_stock())))
+        print("didit")
+    else: 
+        db_curson.execute('UPDATE Products SET in_stock = ? WHERE name = ?', (int(o.check_stock()), o.name))
+    prod_db.commit()
+    # if o.check_stock():
+    #     print("-------------------------")
+    #     print("LABEL:", o.return_name())
+    #     print("PRICE: $" + str(o.return_price()))
+    #     print("LINK: ", o.return_link())
+    #     print("--------------------------")
+
