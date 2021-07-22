@@ -41,7 +41,7 @@ for o in prodlist:
         db_cursor.execute('INSERT INTO Products (name, price, link, in_stock) VALUES (?,?,?,?)', (o.name, o.price, o.link, int(o.check_stock())))
         print("didit")
     else: 
-        db_curson.execute('UPDATE Products SET in_stock = ? WHERE name = ?', (int(o.check_stock()), o.name))
+        db_cursor.execute('UPDATE Products SET in_stock = ? WHERE name = ?', (int(o.check_stock()), o.name))
     prod_db.commit()
     # if o.check_stock():
     #     print("-------------------------")
